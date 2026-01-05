@@ -1,4 +1,4 @@
-import { shuffle } from "../utils/arrayUtils.js";
+import { shuffle } from "../utils/shuffle.js";
 
 // Crée un deck de cartes pour le jeu de mémoire
 function BuildDeck({ VALUES, PAIRS_COUNT }) {
@@ -25,9 +25,9 @@ function BuildDeck({ VALUES, PAIRS_COUNT }) {
   // Mélange les cartes
   const shuffled = shuffle(doubled);
 
-  // Crée les objets carte avec des propriétés initiales
+  // Créer les objets carte avec des propriétés initiales
   return shuffled.map((value, index) => ({
-    id: "card-${index}",
+    id: `card-${index}`,
     value,
     isFlipped: false,
     isMatched: false,
@@ -41,7 +41,7 @@ export function createInitialState(gameConfig) {
     flippedCards: [],
     movesCount: 0,
     startTime: null,
-    statut: idle,
+    statut: "idle",
   };
 }
 
