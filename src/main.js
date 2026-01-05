@@ -1,15 +1,34 @@
-import { gameConfig } from "./game/gameConfig.js";
-import { flipCard, checkMatch, isGameWon } from "./game/gameLogic.js";
+import { createGameConfig, DIFFICULTY_LEVELS } from "./game/gameConfig.js";
+import { isGameWon } from "./game/gameLogic.js";
 import { gameState } from "./game/gameState.js";
 import { renderBoard } from "./ui/boardUI.js";
 import { renderStats } from "./ui/statsUI.js";
-
-// Création de l'état initial du jeu
-let state = gameState(gameConfig);
+import { renderDifficultyMenu } from "./ui/difficultyUI.js";
 
 const root = document.querySelector("#app");
-root.innerHTML = renderStats(state) + renderBoard(state);
 
+let state = null;
+let currentGameConfig = null;
+
+// ===== INITIALISATION =====
+showMenu();
+
+// ===== AFFICHER LE MENU =====
+function showMenu() {
+  root.innerHTML = renderDifficultyMenu();
+  attachMenuListeners();
+}
+
+// ===== DÉMARRER UNE PARTIE =====
+function startGame(difficulty) {
+  currentGameConfig = createGameConfig(
+    DIFFICULTY_LEVELS[difficulty].PAIRS_COUNT
+  );
+  state = gameState(currentGameConfig);
+  rerender();
+}
+
+// ===== RÉAFFICHER LE JEU =====
 function rerender() {
   root.innerHTML = renderStats(state) + renderBoard(state);
 
@@ -20,62 +39,80 @@ function rerender() {
         <h2>🎉 Partie gagnée !</h2>
         <p>Coups: ${state.movesCount}</p>
         <button id="restart-btn" class="btn btn-primary">Rejouer</button>
+        <button id="menu-btn" class="btn btn-secondary">Menu</button>
       </div>
     `;
 
     document
       .getElementById("restart-btn")
       .addEventListener("click", restartGame);
+    document.getElementById("menu-btn").addEventListener("click", showMenu);
   }
 
-  attachEventListeners();
+  attachCardListeners();
 }
 
+// ===== REDÉMARRER LA PARTIE =====
 function restartGame() {
-  state = gameState(gameConfig);
+  state = gameState(currentGameConfig);
   rerender();
 }
 
-// Fonction pour gérer les clics sur les cartes
-root.addEventListener("click", (e) => {
-  const cardEl = e.target.closest(".card");
-  if (!cardEl) return;
+// ===== ÉCOUTEURS DU MENU =====
+function attachMenuListeners() {
+  const btns = document.querySelectorAll(".difficulty-btn");
+  btns.forEach((btn) => {
+    btn.addEventListener("click", (e) => {
+      const difficulty = e.target.getAttribute("data-level");
+      startGame(difficulty);
+    });
+  });
+}
 
-  const cardId = cardEl.dataset.id;
-  const card = state.cards.find((c) => c.id === cardId);
+// ===== ÉCOUTEURS DES CARTES =====
+function attachCardListeners() {
+  const cards = document.querySelectorAll(".card");
+  cards.forEach((cardEl) => {
+    cardEl.addEventListener("click", () => {
+      if (isGameWon(state)) return;
 
-  // Sécurité
-  if (card.isFlipped || card.isMatched) return;
+      const cardId = cardEl.getAttribute("data-id");
+      const card = state.cards.find((c) => c.id === cardId);
 
-  // Démarrer le timer au premier clic
-  if (!state.startTime) {
-    state.startTime = Date.now();
-  }
+      // Ignorer si déjà retournée ou appariée
+      if (card.isFlipped || card.isMatched) return;
 
-  // Retourner la carte
-  card.isFlipped = true;
-  state.flippedCards.push(card);
+      // Démarrer le chronomètre
+      if (!state.startTime) {
+        state.startTime = Date.now();
+      }
 
-  // Vérifier si 2 cartes sont retournées
-  if (state.flippedCards.length === 2) {
-    state.movesCount++;
+      // Retourner la carte
+      card.isFlipped = true;
+      state.flippedCards.push(card);
 
-    const [c1, c2] = state.flippedCards;
+      // Si 2 cartes retournées
+      if (state.flippedCards.length === 2) {
+        state.movesCount++;
+        const [c1, c2] = state.flippedCards;
 
-    if (c1.value === c2.value) {
-      c1.isMatched = true;
-      c2.isMatched = true;
-      state.flippedCards = [];
-    } else {
-      setTimeout(() => {
-        c1.isFlipped = false;
-        c2.isFlipped = false;
-        state.flippedCards = [];
+        if (c1.value === c2.value) {
+          // Paire trouvée
+          c1.isMatched = true;
+          c2.isMatched = true;
+          state.flippedCards = [];
+        } else {
+          // Paire non trouvée - les retourner après 800ms
+          setTimeout(() => {
+            c1.isFlipped = false;
+            c2.isFlipped = false;
+            state.flippedCards = [];
+            rerender();
+          }, 800);
+        }
+      }
 
-        rerender();
-      }, 800);
-    }
-  }
-
-  rerender();
-});
+      rerender();
+    });
+  });
+}
