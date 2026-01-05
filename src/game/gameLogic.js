@@ -1,0 +1,3 @@
+const gameLogic = "";
+
+export { gameLogic };

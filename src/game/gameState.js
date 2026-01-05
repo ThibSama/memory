@@ -35,7 +35,7 @@ function BuildDeck({ VALUES, PAIRS_COUNT }) {
 }
 
 // Créer l'état initial du jeu
-export function createInitialState(gameConfig) {
+export function gameState(gameConfig) {
   return {
     cards: BuildDeck(gameConfig),
     flippedCards: [],
@@ -47,5 +47,5 @@ export function createInitialState(gameConfig) {
 
 // Réinitialiser l'état du jeu
 export function resetState(config) {
-  return createInitialState(config);
+  return gameState(config);
 }

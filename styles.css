@@ -1,0 +1,20 @@
+/* Styles personnalisés pour le Memory Game */
+
+.card {
+  transition: transform 0.3s ease;
+}
+
+.card:hover {
+  transform: scale(1.05);
+}
+
+.card.matched {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.board {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 15px;
+}
