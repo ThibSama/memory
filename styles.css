@@ -1,28 +1,690 @@
 /* Styles personnalisés pour le Memory Game */
 
-.card {
-  width: 100px;
-  height: 100px;
-  cursor: pointer;
-  transition: transform 0.3s ease;
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
-.card:hover {
+body {
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.container {
+  max-width: 900px;
+  width: 100%;
+}
+
+/* ===== HOME PAGE ===== */
+.home-container {
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.home-content {
+  max-width: 1000px;
+  width: 100%;
+  animation: slideUp 0.6s ease;
+}
+
+.home-header {
+  text-align: center;
+  margin-bottom: 60px;
+  color: white;
+}
+
+.home-title {
+  font-size: 4rem;
+  font-weight: 800;
+  margin-bottom: 15px;
+  text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.3);
+  letter-spacing: 2px;
+}
+
+.home-subtitle {
+  font-size: 1.4rem;
+  font-weight: 300;
+  opacity: 0.95;
+  letter-spacing: 0.5px;
+}
+
+.difficulty-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 25px;
+  margin-bottom: 40px;
+}
+
+.difficulty-card {
+  background: white;
+  border-radius: 18px;
+  padding: 30px 20px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.4s ease;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+  border-top: 4px solid #667eea;
+  position: relative;
+  overflow: hidden;
+}
+
+.difficulty-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    135deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.1) 100%
+  );
+  pointer-events: none;
+}
+
+.difficulty-card:hover {
+  transform: translateY(-12px);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.25);
+}
+
+.difficulty-icon {
+  font-size: 4rem;
+  margin-bottom: 15px;
+  display: inline-block;
+  animation: bounce 2s infinite;
+}
+
+.difficulty-card:nth-child(1) .difficulty-icon {
+  animation-delay: 0s;
+}
+
+.difficulty-card:nth-child(2) .difficulty-icon {
+  animation-delay: 0.2s;
+}
+
+.difficulty-card:nth-child(3) .difficulty-icon {
+  animation-delay: 0.4s;
+}
+
+.difficulty-card:nth-child(4) .difficulty-icon {
+  animation-delay: 0.6s;
+}
+
+.difficulty-info {
+  margin-bottom: 20px;
+}
+
+.difficulty-title {
+  font-size: 1.4rem;
+  color: #333;
+  font-weight: 700;
+  margin: 10px 0;
+}
+
+.difficulty-desc {
+  font-size: 0.95rem;
+  color: #666;
+  margin: 8px 0 0 0;
+  font-weight: 500;
+}
+
+.difficulty-btn {
+  width: 100%;
+  padding: 12px 25px;
+  border: none;
+  border-radius: 10px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+}
+
+.difficulty-btn:hover {
+  box-shadow: 0 8px 20px rgba(102, 126, 234, 0.5);
   transform: scale(1.05);
 }
 
+.difficulty-btn:active {
+  transform: scale(0.98);
+}
+
+.home-footer {
+  text-align: center;
+  color: white;
+  margin-top: 40px;
+  padding: 20px;
+  background: rgba(0, 0, 0, 0.1);
+  border-radius: 12px;
+  backdrop-filter: blur(10px);
+}
+
+.home-info {
+  font-size: 1.1rem;
+  margin: 0;
+  font-weight: 500;
+}
+
+/* ===== ANIMATIONS ===== */
+@keyframes bounce {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-15px);
+  }
+}
+
+/* ===== RESPONSIVE HOME ===== */
+@media (max-width: 768px) {
+  .home-title {
+    font-size: 2.5rem;
+  }
+
+  .home-subtitle {
+    font-size: 1.1rem;
+  }
+
+  .difficulty-grid {
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 20px;
+  }
+
+  .difficulty-icon {
+    font-size: 3rem;
+  }
+
+  .difficulty-title {
+    font-size: 1.2rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .home-title {
+    font-size: 2rem;
+  }
+
+  .home-subtitle {
+    font-size: 1rem;
+  }
+
+  .difficulty-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .difficulty-card {
+    padding: 20px 15px;
+  }
+
+  .difficulty-icon {
+    font-size: 2.5rem;
+  }
+
+  .home-info {
+    font-size: 0.95rem;
+  }
+}
+
+/* ===== MENU DE DIFFICULTÉ ===== */
+.difficulty-menu {
+  background: white;
+  padding: 50px 30px;
+  border-radius: 20px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+  text-align: center;
+  animation: slideUp 0.5s ease;
+}
+
+.difficulty-menu h2 {
+  font-size: 1.8rem;
+  color: #333;
+  margin-bottom: 30px;
+  font-weight: 600;
+}
+
+.difficulty-buttons {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 20px;
+}
+
+.difficulty-btn {
+  padding: 18px 25px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  border: none;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+}
+
+.difficulty-btn:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 25px rgba(102, 126, 234, 0.6);
+}
+
+.difficulty-btn:active {
+  transform: translateY(-2px);
+}
+
+/* ===== STATISTIQUES ===== */
+.stats {
+  display: flex;
+  gap: 30px;
+  justify-content: center;
+  margin-bottom: 30px;
+  flex-wrap: wrap;
+}
+
+.stats p {
+  background: white;
+  padding: 15px 30px;
+  border-radius: 12px;
+  font-size: 1.1rem;
+  color: #333;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  font-weight: 500;
+}
+
+.stats strong {
+  color: #667eea;
+  font-size: 1.3rem;
+}
+
+/* ===== BOARD/GRILLE ===== */
+.board {
+  display: grid;
+  gap: 12px;
+  margin-bottom: 30px;
+  padding: 20px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 15px;
+  backdrop-filter: blur(10px);
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Grille spécifique pour chaque difficulté */
+.board[style*="grid-template-columns: repeat(3"] {
+  grid-template-columns: repeat(3, 1fr) !important; /* 6 paires: 3x2 */
+}
+
+.board[style*="grid-template-columns: repeat(4"] {
+  grid-template-columns: repeat(4, 1fr) !important; /* 10 paires: 4x5 */
+}
+
+.board[style*="grid-template-columns: repeat(5"] {
+  grid-template-columns: repeat(5, 1fr) !important; /* 18 paires: 5x7 */
+}
+
+@media (max-width: 768px) {
+  .board {
+    gap: 10px;
+    padding: 15px;
+  }
+}
+
+@media (max-width: 480px) {
+  .board {
+    gap: 8px;
+    padding: 10px;
+  }
+}
+
+/* ===== CARTES ===== */
+.card {
+  aspect-ratio: 1;
+  background: white;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.5rem;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  user-select: none;
+  position: relative;
+  overflow: hidden;
+}
+
+.card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    135deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.1) 100%
+  );
+  pointer-events: none;
+}
+
+.card:hover:not(.matched) {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+}
+
+.card:active:not(.matched) {
+  transform: translateY(-2px);
+}
+
 .card.matched {
-  opacity: 0.5;
+  background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+  color: white;
+  opacity: 0.7;
   cursor: default;
 }
 
-.board {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 15px;
+.card-inner {
+  font-size: 2.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
 }
 
-.card.flipped {
-  background-color: #fff;
-  transform: rotateY(180deg);
+@media (max-width: 480px) {
+  .card {
+    font-size: 1.8rem;
+  }
+}
+
+/* ===== VICTORY PANEL ===== */
+.victory-panel {
+  background: white;
+  padding: 40px 30px;
+  border-radius: 20px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+  text-align: center;
+  animation: scaleIn 0.5s ease;
+}
+
+.victory-panel h2 {
+  font-size: 2.5rem;
+  color: #28a745;
+  margin-bottom: 20px;
+  font-weight: 700;
+}
+
+.victory-panel p {
+  font-size: 1.2rem;
+  color: #666;
+  margin-bottom: 30px;
+  font-weight: 500;
+}
+
+.victory-buttons {
+  display: flex;
+  gap: 15px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.btn-restart,
+.btn-menu {
+  padding: 14px 30px;
+  font-size: 1rem;
+  font-weight: 600;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn-restart {
+  background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+  color: white;
+  box-shadow: 0 4px 15px rgba(40, 167, 69, 0.4);
+}
+
+.btn-restart:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 25px rgba(40, 167, 69, 0.6);
+}
+
+.btn-menu {
+  background: white;
+  color: #667eea;
+  border: 2px solid #667eea;
+  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.2);
+}
+
+.btn-menu:hover {
+  background: #f8f9fa;
+  transform: translateY(-3px);
+  box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+}
+
+/* ===== MODAL VICTOIRE/DÉFAITE ===== */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  animation: fadeIn 0.3s ease;
+}
+
+.modal-content {
+  background: white;
+  border-radius: 20px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  max-width: 500px;
+  width: 90%;
+  overflow: hidden;
+  animation: scaleIn 0.3s ease;
+}
+
+.modal-header {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 30px;
+  text-align: center;
+}
+
+.modal-header h2 {
+  font-size: 2rem;
+  font-weight: 700;
+  margin: 0;
+}
+
+.modal-body {
+  padding: 30px;
+  text-align: center;
+}
+
+.modal-body p {
+  font-size: 1.1rem;
+  color: #666;
+  margin-bottom: 30px;
+  font-weight: 500;
+}
+
+.modal-stats {
+  display: flex;
+  gap: 30px;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.stat-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: #f8f9fa;
+  padding: 20px 30px;
+  border-radius: 12px;
+}
+
+.stat-label {
+  font-size: 0.9rem;
+  color: #999;
+  text-transform: uppercase;
+  font-weight: 600;
+  letter-spacing: 1px;
+  margin-bottom: 8px;
+}
+
+.stat-value {
+  font-size: 2rem;
+  color: #667eea;
+  font-weight: 700;
+}
+
+.modal-footer {
+  display: flex;
+  gap: 12px;
+  padding: 20px 30px;
+  border-top: 1px solid #eee;
+  flex-wrap: wrap;
+}
+
+.btn-restart,
+.btn-menu {
+  flex: 1;
+  min-width: 150px;
+  padding: 14px 20px;
+  font-size: 1rem;
+  font-weight: 600;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn-restart {
+  background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+  color: white;
+  box-shadow: 0 4px 15px rgba(40, 167, 69, 0.4);
+}
+
+.btn-restart:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(40, 167, 69, 0.6);
+}
+
+.btn-menu {
+  background: white;
+  color: #667eea;
+  border: 2px solid #667eea;
+  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.2);
+}
+
+.btn-menu:hover {
+  background: #f8f9fa;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+}
+
+/* ===== ANIMATIONS ===== */
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 768px) {
+  header h1 {
+    font-size: 2rem;
+  }
+
+  .stats {
+    gap: 15px;
+  }
+
+  .stats p {
+    padding: 12px 20px;
+    font-size: 1rem;
+  }
+
+  .victory-panel {
+    padding: 30px 20px;
+  }
+
+  .victory-panel h2 {
+    font-size: 2rem;
+  }
+
+  .difficulty-menu {
+    padding: 30px 20px;
+  }
+
+  .difficulty-menu h2 {
+    font-size: 1.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  header h1 {
+    font-size: 1.5rem;
+  }
+
+  .difficulty-buttons {
+    grid-template-columns: 1fr;
+  }
+
+  .victory-buttons {
+    flex-direction: column;
+  }
+
+  .btn-restart,
+  .btn-menu {
+    width: 100%;
+  }
 }

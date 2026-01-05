@@ -1,14 +1,22 @@
 export function renderBoard(state) {
+  const cardCount = state.cards.length;
+
+  // Calculer le nombre de colonnes pour un rectangle équilibré
+  let cols = 4;
+  if (cardCount <= 6) cols = 3;
+  else if (cardCount <= 12) cols = 4;
+  else if (cardCount <= 20) cols = 5;
+  else cols = 6;
+
   return `
-    <div class="board" style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;">
+    <div class="board" style="grid-template-columns: repeat(${cols}, 1fr);">
       ${state.cards
         .map(
           (card) => `
-        <div class="card 
-            ${card.isFlipped ? "flipped" : ""} 
-            ${card.isMatched ? "matched" : ""}"
-   data-id="${card.id}" style="width:100px;height:100px;cursor:pointer;">
-          <div class="card-inner" style="font-size:40px;display:flex;align-items:center;justify-content:center;">
+        <div class="card ${card.isMatched ? "matched" : ""}" data-id="${
+            card.id
+          }">
+          <div class="card-inner">
             ${card.isFlipped || card.isMatched ? card.value : "?"}
           </div>
         </div>
