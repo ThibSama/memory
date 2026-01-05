@@ -22,4 +22,26 @@ export function checkMatch(state) {
   const [id1, id2] = state.flippedCards;
   const card1 = state.cards.find((c) => c.id === id1);
   const card2 = state.cards.find((c) => c.id === id2);
+
+  if (card1.value === card2.value) {
+    card1.isMatched = true;
+    card2.isMatched = true;
+    return {
+      ...state,
+      flippedCards: [],
+      movesCount: state.movesCount + 1,
+    };
+  } else {
+    card1.isFlipped = false;
+    card2.isFlipped = false;
+    return {
+      ...state,
+      flippedCards: [],
+      movesCount: state.movesCount + 1,
+    };
+  }
+}
+
+export function isGameWon(state) {
+  return state.cards.every((card) => card.isMatched);
 }
