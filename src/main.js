@@ -12,7 +12,7 @@ let state = null;
 let currentGameConfig = null;
 let currentDifficulty = null;
 let gameLoopInterval = null;
-
+let isProcessing = false;
 // ===== INITIALISATION =====
 showMenu();
 
@@ -134,6 +134,7 @@ function rerender() {
 
 // ===== REDÉMARRER LA PARTIE =====
 function restartGame() {
+  isProcessing = false;
   startGame(currentDifficulty);
 }
 
@@ -154,6 +155,7 @@ function attachCardListeners() {
   cards.forEach((cardEl) => {
     cardEl.addEventListener("click", () => {
       if (isGameWon(state) || isGameLost(state)) return;
+      if (isProcessing) return; // Bloquer les clicks pendant les animations
 
       const cardId = cardEl.getAttribute("data-id");
       const card = state.cards.find((c) => c.id === cardId);
@@ -168,6 +170,7 @@ function attachCardListeners() {
       state.flippedCards.push(card);
 
       if (state.flippedCards.length === 2) {
+        isProcessing = true; // Bloquer les clicks pendant le traitement
         state.movesCount++;
         const [c1, c2] = state.flippedCards;
 
@@ -175,11 +178,13 @@ function attachCardListeners() {
           c1.isMatched = true;
           c2.isMatched = true;
           state.flippedCards = [];
+          isProcessing = false; // Débloquer immédiatement si match
         } else {
           setTimeout(() => {
             c1.isFlipped = false;
             c2.isFlipped = false;
             state.flippedCards = [];
+            isProcessing = false; // Débloquer après animation
             rerender();
           }, 800);
         }
