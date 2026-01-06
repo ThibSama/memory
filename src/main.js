@@ -155,7 +155,7 @@ function attachCardListeners() {
   cards.forEach((cardEl) => {
     cardEl.addEventListener("click", () => {
       if (isGameWon(state) || isGameLost(state)) return;
-      if (isProcessing) return; // Bloquer les clicks pendant les animations
+      if (isProcessing) return;
 
       const cardId = cardEl.getAttribute("data-id");
       const card = state.cards.find((c) => c.id === cardId);
@@ -170,7 +170,7 @@ function attachCardListeners() {
       state.flippedCards.push(card);
 
       if (state.flippedCards.length === 2) {
-        isProcessing = true; // Bloquer les clicks pendant le traitement
+        isProcessing = true;
         state.movesCount++;
         const [c1, c2] = state.flippedCards;
 
@@ -178,13 +178,13 @@ function attachCardListeners() {
           c1.isMatched = true;
           c2.isMatched = true;
           state.flippedCards = [];
-          isProcessing = false; // Débloquer immédiatement si match
+          isProcessing = false;
         } else {
           setTimeout(() => {
             c1.isFlipped = false;
             c2.isFlipped = false;
             state.flippedCards = [];
-            isProcessing = false; // Débloquer après animation
+            isProcessing = false;
             rerender();
           }, 800);
         }
