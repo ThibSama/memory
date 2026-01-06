@@ -1,31 +1,42 @@
 import { createGameConfig, DIFFICULTY_LEVELS } from "./game/gameConfig.js";
-import { isGameWon } from "./game/gameLogic.js";
-import { gameState } from "./game/gameState.js";
+import type { GameStateType, GameConfig } from "./types.js";
+
+import { isGameWon, checkMatch, flipCard } from "./game/gameLogic.js";
+
+import { gameState, resetState } from "./game/gameState.js";
+
 import { renderBoard } from "./ui/boardUI.js";
 import { renderStats } from "./ui/statsUI.js";
 import { renderDifficultyMenu } from "./ui/difficultyUI.js";
 import { renderModal } from "./ui/modalUI.js";
 
-const root = document.querySelector("#app");
+const root = document.querySelector("#app") as HTMLElement;
 
-let state = null;
-let currentGameConfig = null;
-let currentDifficulty = null;
-let gameLoopInterval = null;
+let state: GameStateType | null = null;
+let currentGameConfig: GameConfig | null = null;
+let currentDifficulty: string | null = null;
+let gameLoopInterval: number | null = null;
 let isProcessing = false;
+
 // ===== INITIALISATION =====
 showMenu();
 
 // ===== AFFICHER LE MENU =====
-function showMenu() {
+function showMenu(): void {
   root.innerHTML = renderDifficultyMenu();
   attachMenuListeners();
 }
 
 // ===== DÉMARRER UNE PARTIE =====
-function startGame(difficulty) {
+function startGame(difficulty: string): void {
   currentDifficulty = difficulty;
   const level = DIFFICULTY_LEVELS[difficulty];
+
+  if (!level) {
+    console.error(`Difficulté invalide: ${difficulty}`);
+    return;
+  }
+
   currentGameConfig = createGameConfig(
     level.PAIRS_COUNT,
     level.timeLimit,
@@ -37,24 +48,24 @@ function startGame(difficulty) {
   // Démarrer la boucle de mise à jour (pour l'affichage du temps)
   if (gameLoopInterval) clearInterval(gameLoopInterval);
   gameLoopInterval = setInterval(() => {
-    if (state.startTime) {
+    if (state?.startTime) {
       rerender();
     }
-  }, 1000);
+  }, 1000) as unknown as number;
 }
 
 // ===== VÉRIFIER LA DÉFAITE =====
-function isGameLost(state) {
+function isGameLost(state: GameStateType): boolean {
   if (!state.startTime) return false;
 
   // Vérifier le temps
-  if (currentGameConfig.TIME_LIMIT) {
+  if (currentGameConfig?.TIME_LIMIT) {
     const elapsed = Math.floor((Date.now() - state.startTime) / 1000);
     if (elapsed > currentGameConfig.TIME_LIMIT) return true;
   }
 
   // Vérifier les coups
-  if (currentGameConfig.MOVE_LIMIT) {
+  if (currentGameConfig?.MOVE_LIMIT) {
     if (state.movesCount >= currentGameConfig.MOVE_LIMIT) return true;
   }
 
@@ -62,12 +73,14 @@ function isGameLost(state) {
 }
 
 // ===== RÉAFFICHER LE JEU =====
-function rerender() {
+function rerender(): void {
+  if (!state || !currentGameConfig) return;
+
   root.innerHTML = renderStats(state, currentGameConfig) + renderBoard(state);
 
   // Vérifier la défaite
   if (isGameLost(state)) {
-    const elapsed = Math.floor((Date.now() - state.startTime) / 1000);
+    const elapsed = Math.floor((Date.now() - state.startTime!) / 1000);
     root.innerHTML += renderModal({
       title: "💀 Défaite !",
       message: "Vous avez atteint les limites !",
@@ -89,17 +102,17 @@ function rerender() {
       ],
     });
 
-    clearInterval(gameLoopInterval);
+    if (gameLoopInterval) clearInterval(gameLoopInterval);
     document
       .getElementById("restart-btn")
-      .addEventListener("click", restartGame);
-    document.getElementById("menu-btn").addEventListener("click", showMenu);
+      ?.addEventListener("click", restartGame);
+    document.getElementById("menu-btn")?.addEventListener("click", showMenu);
     return;
   }
 
   // Vérifier la victoire
   if (isGameWon(state)) {
-    const elapsed = Math.floor((Date.now() - state.startTime) / 1000);
+    const elapsed = Math.floor((Date.now() - state.startTime!) / 1000);
     root.innerHTML += renderModal({
       title: "🎉 Victoire !",
       message: "Vous avez trouvé toutes les paires !",
@@ -121,11 +134,11 @@ function rerender() {
       ],
     });
 
-    clearInterval(gameLoopInterval);
+    if (gameLoopInterval) clearInterval(gameLoopInterval);
     document
       .getElementById("restart-btn")
-      .addEventListener("click", restartGame);
-    document.getElementById("menu-btn").addEventListener("click", showMenu);
+      ?.addEventListener("click", restartGame);
+    document.getElementById("menu-btn")?.addEventListener("click", showMenu);
     return;
   }
 
@@ -133,46 +146,54 @@ function rerender() {
 }
 
 // ===== REDÉMARRER LA PARTIE =====
-function restartGame() {
+function restartGame(): void {
   isProcessing = false;
-  startGame(currentDifficulty);
+  if (currentDifficulty) {
+    startGame(currentDifficulty);
+  }
 }
 
 // ===== ÉCOUTEURS DU MENU =====
-function attachMenuListeners() {
+function attachMenuListeners(): void {
   const btns = document.querySelectorAll(".difficulty-btn");
   btns.forEach((btn) => {
     btn.addEventListener("click", (e) => {
-      const difficulty = e.target.getAttribute("data-level");
-      startGame(difficulty);
+      const difficulty = (e.target as HTMLElement).getAttribute("data-level");
+      if (difficulty) {
+        startGame(difficulty);
+      }
     });
   });
 }
 
 // ===== ÉCOUTEURS DES CARTES =====
-function attachCardListeners() {
+function attachCardListeners(): void {
   const cards = document.querySelectorAll(".card");
   cards.forEach((cardEl) => {
     cardEl.addEventListener("click", () => {
+      if (!state || !currentGameConfig) return;
       if (isGameWon(state) || isGameLost(state)) return;
       if (isProcessing) return;
 
-      const cardId = cardEl.getAttribute("data-id");
+      const cardId = (cardEl as HTMLElement).getAttribute("data-id");
       const card = state.cards.find((c) => c.id === cardId);
 
-      if (card.isFlipped || card.isMatched) return;
+      if (!card || card.isFlipped || card.isMatched) return;
 
       if (!state.startTime) {
         state.startTime = Date.now();
       }
 
       card.isFlipped = true;
-      state.flippedCards.push(card);
+      state.flippedCards.push(card.id);
 
       if (state.flippedCards.length === 2) {
         isProcessing = true;
         state.movesCount++;
-        const [c1, c2] = state.flippedCards;
+        const cardId1 = state.flippedCards[0];
+        const cardId2 = state.flippedCards[1];
+        const c1 = state.cards.find((c) => c.id === cardId1)!;
+        const c2 = state.cards.find((c) => c.id === cardId2)!;
 
         if (c1.value === c2.value) {
           c1.isMatched = true;
@@ -183,7 +204,7 @@ function attachCardListeners() {
           setTimeout(() => {
             c1.isFlipped = false;
             c2.isFlipped = false;
-            state.flippedCards = [];
+            state!.flippedCards = [];
             isProcessing = false;
             rerender();
           }, 800);

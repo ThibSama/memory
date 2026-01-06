@@ -1,4 +1,9 @@
-export function renderStats(state, gameConfig) {
+import type { GameStateType, GameConfig } from "../types.js";
+
+export function renderStats(
+  state: GameStateType,
+  gameConfig: GameConfig
+): string {
   const elapsed = state.startTime
     ? Math.floor((Date.now() - state.startTime) / 1000)
     : 0;

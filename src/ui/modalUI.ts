@@ -1,4 +1,22 @@
-export function renderModal({ title, message, stats = "", buttons = [] }) {
+interface Button {
+  id: string;
+  label: string;
+  style: string;
+}
+
+interface ModalConfig {
+  title: string;
+  message: string;
+  stats?: string;
+  buttons?: Button[];
+}
+
+export function renderModal({
+  title,
+  message,
+  stats = "",
+  buttons = [],
+}: ModalConfig): string {
   return `
     <div class="modal-overlay">
       <div class="modal-content">

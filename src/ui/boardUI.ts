@@ -1,15 +1,15 @@
-export function renderBoard(state) {
-  const cardCount = state.cards.length;
+import type { GameStateType } from "../types.js";
 
-  // Calculer le nombre de colonnes pour un rectangle équilibré
-  let cols = 4;
+export function renderBoard(state: GameStateType): string {
+  const cardCount = state.cards.length;
+  let cols: number = 4;
   if (cardCount <= 6) cols = 3;
   else if (cardCount <= 12) cols = 4;
   else if (cardCount <= 20) cols = 5;
   else cols = 6;
 
   return `
-    <div class="board" style="grid-template-columns: repeat(${cols}, 1fr);">
+  <div class="board" style="grid-template-columns: repeat(${cols}, 1fr);">
       ${state.cards
         .map(
           (card) => `
